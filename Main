@@ -1,0 +1,80 @@
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import javax.imageio.ImageIO;
+
+public class SplitImage {
+	
+	public static void main( String [] args) 
+
+	{
+		File importFile = new File("ScriptTemplate.png"); // import/use png file 
+		try { // test if there is a valid png file,
+			System.out.println("Success catching input file, Split Beginning");
+			Split(importFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("There is no file found, please input a file first");  
+			e.printStackTrace(); // location of error 
+		} catch (IOException e) { // exception for Split 
+			e.printStackTrace();
+		}
+	}
+	
+		
+	public static void Split(File changeImportFile) throws IOException
+	{
+		
+    changeImportFile = new File("ScriptTemplate.png"); // image, same as image in main, just needs to be filled with something, if they were different, it would use image in main 
+	FileInputStream picture = new FileInputStream(changeImportFile);; // actually read the file in bytes
+	BufferedImage readPicture = ImageIO.read(picture); // reads in picture from bytes 
+	int number =0; // need a value for the array, initialize 
+	int rows = 14;
+	int columns = 10;
+	int numberOfSquares = rows * columns; // number of boxes
+	int SquaresWidth =  readPicture.getWidth()/ columns;
+	int SquaresHeight = readPicture.getHeight()/ rows;
+	
+	BufferedImage[] arrayOfPicture = new BufferedImage [numberOfSquares]; // array of squares 
+	
+	//put all the squares into an array, so later we can determine the coordinates 
+	for( int i = 0; i<rows;i++){
+		for( int j = 0; j<columns;j++){
+			
+			arrayOfPicture[number] = new BufferedImage(SquaresWidth, SquaresHeight, readPicture.getType()); // fill with info of the boxes 
+			Graphics2D graphics  = arrayOfPicture[number++].createGraphics(); // rendering each square to have control over the coordinates and print out 
+			
+			//formatting boxes 
+			graphics.drawImage(readPicture, 0, 0, SquaresWidth, SquaresHeight, SquaresWidth * j, SquaresHeight * i, 
+					SquaresWidth * j + SquaresWidth, SquaresHeight * i + SquaresWidth,null);
+			//setting coordinates (0, 0) CORNOR LEFT, SquaresWidth, SquaresHeight = CORNOR RIGHT, SquaresHeight * i, SquaresWidth * j BOTTOM LEFT,
+			//SquaresWidth * j + SquaresWidth, SquaresHeight * i + SquaresWidth BOTTOM RIGHT	
+		}
+		
+	}
+	
+	File outputFile = new File("ScriptTemplate2.png"); // output file 
+	try{
+	
+	System.out.println("Success catching output file, now writing boxes");
+	
+	for( int i =0; i<arrayOfPicture.length; i++){ // creating output for length of array, i.e columns * rows // 140 squares 
+		ImageIO.write(arrayOfPicture[i], " png", outputFile); // writes to output screen  
+	 }
+	    }
+	catch (FileNotFoundException e) {
+		System.out.println("There is no file found, please select an output file first");  
+		e.printStackTrace(); //  
+	}
+	
+	if(outputFile != null){
+      System.out.println("Finished! " + "File new location is at: " + outputFile.getAbsolutePath());
+      
+	}
+	
+	else{
+		System.out.println("An error occured while printing,please try again");
+	}
+	
+	}	
+	
+}
