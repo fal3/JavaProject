@@ -1,0 +1,145 @@
+package fontCreator;
+
+import java.util.List;
+
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
+import com.gargoylesoftware.htmlunit.html.HtmlDivision;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+
+public class PngToSvg {
+
+	public static void main (String args[]) throws Exception {
+
+		// TURNING WARNINGS OFF, if not, you get tons of warnings before runtime 
+		java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(java.util.logging.Level.OFF);
+		java.util.logging.Logger.getLogger("org.apache.http").setLevel(java.util.logging.Level.OFF);
+
+		WebClient webClient = null; // initializing a webclient, allows us to use the internet 
+		HtmlPage page1 = null; // the url we want to access 
+
+		try{ 
+
+			webClient = new WebClient();
+			System.out.println("WebClient started, now loading webpage");
+			System.out.println("LOADING, PLEASE WAIT");
+			
+
+			// Get the initial page
+			page1 = webClient.getPage("http://image.online-convert.com/convert-to-svg/");
+
+			// final HtmlPage page1 = webClient.getPage("http://www.google.com"); not a heavy content page, use to test laster if errors occur 
+
+			System.out.println("The webpage we are at is " + page1.getTitleText()); // ensure we are on the right page 
+		}
+		catch(Exception e){
+			System.out.println("Error finding the webpage, make sure you entered the correct url");
+			System.out.println("Also plese check your internet connection, procces timed out");
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		// now the page is successfuly loaded 
+		// we want to click on the button "choose files" but first we need to find it 
+		// so we are going to find it, via inspect element, the div id of it 
+		
+		HtmlButton htmlButton = null; // trying to click the button "choose files"
+		try{
+			htmlButton = (HtmlButton) page1.getElementById("Choose_file_to_convert"); // return null, incorrect, need to find correct attribute
+			
+			if(htmlButton != null){
+				System.out.println("Found the button: " + htmlButton);
+			}
+			
+			
+			else{
+				System.out.println("The button you are looking for is returning a null value");
+				throw new Exception();
+			}
+		}
+		catch(Exception e){
+			System.out.println("Your Button could not be found");
+			System.out.println("Your attribute listed above might be incorrect, check again");
+			System.out.println("Please check the website below to ensure you are properly using 'getElementByID'");
+			System.out.println("http://docs.oracle.com/javase/6/docs/api/org/w3c/dom/Document.html#getElementById%28java.lang.String%29");
+			e.printStackTrace();
+			System.exit(0);
+		}
+		
+		try{
+			
+			page1 =htmlButton.click();
+			System.out.println("Button " +htmlButton + " was successfuly clicked");
+		}
+		catch(Exception e){
+			System.out.println("Could not click button, please try again, thanks");
+			e.printStackTrace();
+			System.exit(0);
+			
+		}
+	
+		
+		
+		
+		
+		
+		//another way of doing it, above is return null, which means we do not have the correct attribute of the element 
+		HtmlDivision div = null; // div id 
+		HtmlAnchor anchor = null; // name it is called 
+		try{
+
+			div = page1.getHtmlElementById("content_3col");	// div id, where the button is location 
+			System.out.println(div);
+			
+		}
+		catch(ElementNotFoundException ex){
+
+			System.out.println("Could not find div");
+			ex.printStackTrace();
+		}
+
+		try{
+
+			anchor = page1.getAnchorByName("file"); // name of the button in inspect element 
+			System.out.println(anchor);
+		}
+		catch(ElementNotFoundException e){
+			System.out.println("Could not find anchor");
+			e.printStackTrace();
+		}
+
+
+
+
+		//get list of all divs
+
+		// final List<?> divs = page1.getByXPath("//div");
+
+		//get div which has a 'name' attribute of 'John'
+		//final HtmlDivision div = (HtmlDivision) page1.getByXPath("file").get(0);
+
+		// Get the form that we are dealing with and within that form, 
+		// find the submit button and the field that we want to change.
+
+		//System.out.println(div);
+
+		//final HtmlForm form = page1.getFormByName("myform");
+
+		//final HtmlSubmitInput button = form.getInputByName("submitbutton");
+
+		//final HtmlTextInput textField = form.getInputByName("userid");
+
+		// Change the value of the text field
+		// textField.setValueAttribute("root");
+
+		// Now submit the form by clicking the button and get back the second page.
+		//final HtmlPage page2 = button.click();*/
+
+		webClient.closeAllWindows(); // closing the cient 
+	}
+}
