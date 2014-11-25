@@ -1,0 +1,197 @@
+package fontCreator;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URL;
+import java.util.List;
+
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
+import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
+import com.gargoylesoftware.htmlunit.html.HtmlDivision;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+
+public class PngToSvg {
+
+	public static void main (String args[]) throws Exception {
+
+		// TURNING WARNINGS OFF, if not, you get tons of warnings before runtime 
+		java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(java.util.logging.Level.OFF);
+		java.util.logging.Logger.getLogger("org.apache.http").setLevel(java.util.logging.Level.OFF);
+
+
+		WebClient webClient = null; // initializing a webclient, allows us to use the internet 
+		HtmlPage page1 = null; // the url we want to access 
+
+		try{ 
+
+			webClient = new WebClient();
+			webClient.getOptions().setUseInsecureSSL(true);
+			webClient.getCookieManager().setCookiesEnabled(true);
+
+			System.out.println("WebClient started, now loading webpage");
+			System.out.println("LOADING, PLEASE WAIT");
+
+
+			// Get the initial page
+			page1 = webClient.getPage("http://image.online-convert.com/convert-to-svg/");
+
+			// final HtmlPage page1 = webClient.getPage("http://www.google.com"); not a heavy content page, use to test laster if errors occur 
+
+			System.out.println("The webpage we are at is " + page1.getTitleText()); // ensure we are on the right page 
+		}
+		catch(Exception e){
+			System.out.println("Error finding the webpage, make sure you entered the correct url");
+			System.out.println("Also plese check your internet connection, procces timed out");
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		// now the page is successfuly loaded 
+		// we want to click on the button "choose files" but first we need to find it 
+		// so we are going to find it, via inspect element, the div id of it 
+
+
+		HtmlForm form = null; // first need to access the form part of the website, can be found in the inspect element 
+
+		try{
+			form = page1.getFormByName("forms"); // in inspect element, the location of the button is inside forms
+			System.out.println("Successful at finding the form you want to fill out");
+		}
+		catch(Exception e)	{
+			System.out.println("Error, could not fild the location of the from you want to fill out");
+			System.out.println("Your attribute listed above might be incorrect, check again");
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		HtmlFileInput fileInputButton = null;  // declaring and initializing a htmlElement
+		//going to be used to click on a button, but its not a normal button, has no value
+		//so we use htmlFileInput instead of htmlSubmitInput 
+		// could also be because we are uploading files 
+
+		try{
+			fileInputButton =   form.getInputByName("file"); // inside inspect element, the 'name' of the button 'convert file' is called file 
+
+			if(fileInputButton != null){ // need to ensure the button is actually clickable 
+				// was giving nullPointerException at one point, doing a quick test to ensure it does not return null ever
+				System.out.println("Success at finding  button: " + fileInputButton);
+			}
+
+			else{
+				System.out.println("The button you are looking for is returning a null value"); // if htmlButton is null, lets throw the exception 
+				throw new Exception();
+			}
+		}
+		catch(Exception e){
+			// something going on with the inspect elements names 
+			// can not find the correct button, need to go into inspect element to make sure the names did not change 
+			// ISSUE FIXED 
+			System.out.println("Your Button could not be found");
+			System.out.println("Your attribute listed above might be incorrect, check again");
+			System.out.println("Please check the website below to ensure you are properly using 'getElementByID'");
+			System.out.println("http://docs.oracle.com/javase/6/docs/api/org/w3c/dom/Document.html#getElementById%28java.lang.String%29");
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		try{
+
+			page1 =fileInputButton.click(); // click on the button 
+			// Process for the second button will be exactly the same when converting,
+			// Believe we can use getInputByValue, since the second button is considered a submit button 
+			// second button has a value "Convert file"
+			System.out.println("Button  was successfuly clicked");
+		}
+		catch(Exception e){ // button was not able to be clicked on 
+			System.out.println("Could not click button, please try again, thanks");
+			e.printStackTrace();
+			System.exit(0);
+
+		}
+
+		//selecting the images from the popup
+		HtmlPage responsePage;
+		String fileLocation = "C:\\Users\\michelc1\\workspace\\Iteration 1\\ScriptTemplate0"; // saying that every file exist??
+		File filePath ;
+		try{
+			//final URL filePath = PngToSvg.class .getClassLoader().getResource("ScriptTemplate0");
+			//File filePath =  new File("C:\\Users\\michelc1\\workspace\\Iteration 1");
+			try{
+				filePath = new File(fileLocation);
+				System.out.println("Your file exist, selecting now");
+			}
+			catch(Exception ex){
+				System.out.println("Your file was not found, please ensure it exist");
+				ex.printStackTrace();
+				System.exit(0);
+			}
+			fileInputButton.setValueAttribute(fileLocation);
+			fileInputButton.setContentType("image/png");
+			//fileInputButton.setContentType(;"ScriptTemplate0");
+			//fileInputButton.getButtonByName(name).click();
+			responsePage = fileInputButton.click();
+
+			System.out.println("Successfuly selected the file");
+		}
+		catch(Exception e){
+
+			System.out.println("An error occured while trying to select the images");
+			e.printStackTrace();
+			System.exit(0);
+
+		}
+
+
+		// this process is exactly the same as the "Choose Files" button, but alot easier 
+		// the Convert File has a value, so we do not need to search through the names, instead we can search through the value 
+
+		HtmlSubmitInput htmlButton2 = null; // declaring and initializing a htmlSubmitInput 
+		// long story short, find the form, in which the button is located in, then we are going to ensure
+		// the button is a valid button and it can be click on
+
+		try{
+			htmlButton2 =  form.getInputByValue("Convert file");
+
+			if(htmlButton2 != null){
+				System.out.println("Success at finding  button: " + htmlButton2);
+			}
+
+			else{
+				System.out.println("The button you are looking for is returning a null value");
+				throw new Exception(); // throw the exception below 
+			}
+		}
+		catch(Exception e){
+
+			System.out.println("Your Button could not be found");
+			System.out.println("Your attribute listed above might be incorrect, check again");
+			System.out.println("Please check the website below to ensure you are properly using 'getElementByID'");
+			System.out.println("http://docs.oracle.com/javase/6/docs/api/org/w3c/dom/Document.html#getElementById%28java.lang.String%29");
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		try{
+
+			page1 =htmlButton2.click(); // click on the "Convert file" button 
+			System.out.println("Button  was successfuly clicked");
+		}
+		catch(Exception e){
+			System.out.println("Could not click button, please try again, thanks");
+			e.printStackTrace();
+			System.exit(0);
+
+		}
+
+		webClient.closeAllWindows(); // closing the cient 
+	}
+}
