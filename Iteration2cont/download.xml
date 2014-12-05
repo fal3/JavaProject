@@ -1,0 +1,12 @@
+<queue>
+<apiKey>2e3152........03258494237510e6</apiKey>
+<targetType>image</targetType>
+<targetMethod>convert-to-svg</targetMethod>
+<testMode>true</testMode>
+<file>
+<fileName>PDFpic.pdf</fileName>
+<fileData>
+
+</fileData>
+</file>
+</queue>
