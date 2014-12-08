@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 
-public class Snake implements ActionListener,KeyListener{
+public class Snake implements KeyListener,ActionListener{
 	public JFrame jframe;
 	
 	public static Snake snake;
@@ -23,14 +23,14 @@ public class Snake implements ActionListener,KeyListener{
 	
 	public Toolkit toolkit;
 	
-	// used to refresh the box
-	public Timer timer = new Timer(20,this);
 	
 	//array for the actual snake
 	public ArrayList<Point> snakeParts = new ArrayList<Point>();
 	
 	//speed = speed of snake
 	public int speed = 0;
+	
+	public int howFast;
 	
 	//direction snake is traveling at start
 	public int direction = DOWN;
@@ -40,15 +40,21 @@ public class Snake implements ActionListener,KeyListener{
 	
 	
 	//size of each snake pieces
-	public static final int SCALE = 5;
+	public static final int SCALE = 6;
 	
 	//head of the snake
 	public Point head;
 	
+	public int x;
+	
+	// used to refresh the box
+	public Timer timer = new Timer(x,this);
+		
 	
 	//the objective to run into called the "cherry"
 	public Point cherry;
 	
+	public int tailLength = 10;
 	
 	//default constructor
 	public Snake() {
@@ -69,11 +75,32 @@ public class Snake implements ActionListener,KeyListener{
 		// creates gui interface for snake
 		jframe.add(renderPanel = new Box());
 		
+		//to enable key recognition
+		jframe.addKeyListener(this);
+		
+		startGame();
+	
+	}
+	
+	public void startGame(){
+		
+		
 		// starting location for snake
 		head = new Point(0, 0);
 		
-		//to enable key recognition
-		jframe.addKeyListener(this);
+		tailLength = 10;
+		
+		speed = 0;
+		
+		howFast = 0;
+		// initial speed
+		x=20;
+		
+		Random rand = new Random();
+		
+		snakeParts.clear();
+		
+		cherry = new Point(rand.nextInt(69),rand.nextInt(69));
 		
 		// starts the snake
 		timer.start();
@@ -83,34 +110,7 @@ public class Snake implements ActionListener,KeyListener{
 		snake = new Snake();	
 	}	
 	
-	//unimplemented method from interface ActionListener
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		//refreshes box
-		renderPanel.repaint();
-		
-		speed++;
-		//Algorithm for the snake moving on grid
-		// speed % (x) sets speed of snake
-		if(speed % 1 ==0){
-			snakeParts.add(new Point(head.x, head.y));
-			if(direction == UP)
-				head = new Point(head.x, head.y - 1);
-			if(direction == DOWN)
-				head = new Point(head.x, head.y + 1);
-			if(direction == LEFT)
-				head = new Point(head.x - 1, head.y);
-			if(direction == RIGHT)
-			head = new Point(head.x + 1, head.y);
-			// deletes parts of snake behind head
-			snakeParts.remove(0);
-		
-			}
-			
-		}
-
 	// when arrow is pushed, snake moves in that direction
-	
 	@Override
 	public void keyPressed(KeyEvent arrow) {
 		int i = arrow.getKeyCode();
@@ -125,6 +125,53 @@ public class Snake implements ActionListener,KeyListener{
 		
 	}
 
+	
+
+
+	@Override
+	public void actionPerformed(ActionEvent arg0){
+		//refreshes box
+		renderPanel.repaint();
+		
+		speed++;
+		//Algorithm for the snake moving on grid
+		// speed % (x) sets speed of snake
+		if(speed % 50 ==0){
+			snakeParts.add(new Point(head.x, head.y));
+			if(direction == UP && noTailAt(head.x, head.y - 1))
+				head = new Point(head.x, head.y - 1);
+			if(direction == DOWN && noTailAt(head.x, head.y + 1))
+				head = new Point(head.x, head.y + 1);
+			if(direction == LEFT && noTailAt(head.x - 1, head.y))
+				head = new Point(head.x - 1, head.y);
+			if(direction == RIGHT && noTailAt(head.x + 1, head.y))
+			head = new Point(head.x + 1, head.y);
+			if (snakeParts.size() > tailLength)
+                snakeParts.remove(0);
+			if (cherry != null) {
+                if (head.equals(cherry)) {
+                	Random rand = new Random();
+                    cherry.setLocation(rand.nextInt(79), rand.nextInt(66));
+                    tailLength += 2;
+                    if(x-1 > 0){
+                    	howFast++;
+                    	x -=1;
+                    }
+                }
+			}
+			
+		}
+	}
+	// returns false if tail is at point you try to turn to
+	// returns true if it is safe
+	public boolean noTailAt(int x, int y) {
+        for (Point point : snakeParts) {
+                if (point.equals(new Point(x, y))) {
+                        return false;
+                }
+        }
+        return true;
+}
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
@@ -136,7 +183,7 @@ public class Snake implements ActionListener,KeyListener{
 		// TODO Auto-generated method stub
 		
 	}
-	}
+}
 	
 	
 
