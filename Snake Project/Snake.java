@@ -30,6 +30,7 @@ public class Snake implements KeyListener,ActionListener{
 	//speed = speed of snake
 	public int speed = 0;
 	
+	// display of the current speed setting
 	public int howFast;
 	
 	//direction snake is traveling at start
@@ -54,6 +55,10 @@ public class Snake implements KeyListener,ActionListener{
 	//the objective to run into called the "cherry"
 	public Point cherry;
 	
+	// ends game if true
+	public boolean gameOver;
+	
+	//length of snake 
 	public int tailLength = 10;
 	
 	//default constructor
@@ -96,6 +101,8 @@ public class Snake implements KeyListener,ActionListener{
 		// initial speed
 		x=20;
 		
+		gameOver = false;
+		
 		Random rand = new Random();
 		
 		snakeParts.clear();
@@ -136,25 +143,46 @@ public class Snake implements KeyListener,ActionListener{
 		speed++;
 		//Algorithm for the snake moving on grid
 		// speed % (x) sets speed of snake
-		if(speed % 50 ==0){
+		if(speed % x ==0 && gameOver == false){
 			snakeParts.add(new Point(head.x, head.y));
-			if(direction == UP && noTailAt(head.x, head.y - 1))
-				head = new Point(head.x, head.y - 1);
+			if(direction == UP  && noTailAt(head.x, head.y - 1)) 
+				if(head.y - 1 >= 0 && noTailAt(head.x, head.y - 1))
+					head = new Point(head.x, head.y - 1);
+			else
+				gameOver = true;
 			if(direction == DOWN && noTailAt(head.x, head.y + 1))
-				head = new Point(head.x, head.y + 1);
+				 if (head.y + 1 < 67 && noTailAt(head.x, head.y + 1))
+					 head = new Point(head.x, head.y + 1);
+			else
+				gameOver = true;
 			if(direction == LEFT && noTailAt(head.x - 1, head.y))
-				head = new Point(head.x - 1, head.y);
+				if (head.x - 1 >= 0 && noTailAt(head.x - 1, head.y))
+					head = new Point(head.x - 1, head.y);
+			else
+				gameOver= true;
 			if(direction == RIGHT && noTailAt(head.x + 1, head.y))
-			head = new Point(head.x + 1, head.y);
+				if (head.x + 1 < 80 && noTailAt(head.x + 1, head.y))
+					head = new Point(head.x + 1, head.y);
+			else
+				gameOver = true;
+			
 			if (snakeParts.size() > tailLength)
                 snakeParts.remove(0);
+			
 			if (cherry != null) {
+				
                 if (head.equals(cherry)) {
+                	
                 	Random rand = new Random();
+                	
                     cherry.setLocation(rand.nextInt(79), rand.nextInt(66));
+                    
                     tailLength += 2;
+                    
                     if(x-1 > 0){
+                    	
                     	howFast++;
+                    	
                     	x -=1;
                     }
                 }
