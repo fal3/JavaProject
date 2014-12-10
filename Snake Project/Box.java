@@ -11,12 +11,16 @@ import javax.swing.JPanel;
 public class Box extends JPanel {
 	//paints the gui black, snake red
 	
+	public Box() {
+		this.setBounds(0,0,800,800);
+	}
+	
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
 		// color of background
 		g.setColor(Color.black);
-		g.fillRect(0, 0, 800, 800);
-		Snake figure = Snake.snake;
+		g.fillRect(0,0, 480, 400);
+		Snake figure = Snake.getInstance();
 		// color of snake
 		g.setColor(Color.yellow);
 		//paints the color in certain locations for the snake 
