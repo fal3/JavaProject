@@ -31,9 +31,8 @@ public class Snake implements KeyListener,ActionListener{
 	
 	//speed = speed of snake
 	public int speed = 0;
-	
-	// display of the current speed setting
-	public int howFast;
+
+	public int time;
 	
 	//direction snake is traveling at start
 	public int direction = DOWN;
@@ -48,20 +47,23 @@ public class Snake implements KeyListener,ActionListener{
 	//head of the snake
 	public Point head;
 	
-	public int x;
+	// # of cherrys colided with
+	public int score;
 	
 	// used to refresh the box
-	public Timer timer = new Timer(x,this);
+	public Timer timer = new Timer(20,this);
 		
 	
 	//the objective to run into called the "cherry"
 	public Point cherry;
 	
+	private boolean paused;
+	
 	// ends game if true
 	public boolean gameOver;
 	
 	//length of snake 
-	public int tailLength = 10;
+	public int tailLength;
 	
 	public static Snake getInstance(){
 		if (snake == null) {
@@ -79,7 +81,7 @@ public class Snake implements KeyListener,ActionListener{
 		jframe = new JFrame("Snake");
 		
 		//size of interface box
-		jframe.setSize(480, 400);
+		jframe.setSize(720, 600);
 		jframe.setResizable(false);
 		
 		// centers interface on screen
@@ -88,6 +90,7 @@ public class Snake implements KeyListener,ActionListener{
 		// creates gui interface for snake
 		jframe.setLayout(null);
 		jframe.add(renderPanel = new Box());
+		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//to enable key recognition
 		jframe.addKeyListener(this);
@@ -106,13 +109,17 @@ public class Snake implements KeyListener,ActionListener{
 		// starting location for snake
 		head = new Point(0, 0);
 		
-		tailLength = 10;
+		tailLength = 1;
+		
+		direction = DOWN;
 		
 		speed = 0;
 		
-		howFast = 0;
-		// initial speed
-		x=20;
+		score = 0;
+		
+		time = 0;
+		
+		paused = false;
 		
 		gameOver = false;
 		
@@ -140,6 +147,11 @@ public class Snake implements KeyListener,ActionListener{
                 direction = UP;
         if ((i == KeyEvent.VK_DOWN) && direction != UP)
                 direction = DOWN;
+        if (i == KeyEvent.VK_SPACE)
+            if (gameOver)
+                    startGame();
+            else
+                paused = !paused;
 		
 	}
 
@@ -150,11 +162,11 @@ public class Snake implements KeyListener,ActionListener{
 	public void actionPerformed(ActionEvent arg0){
 		//refreshes box
 		renderPanel.repaint();
-		
 		speed++;
 		//Algorithm for the snake moving on grid
 		// speed % (x) sets speed of snake
-		if(speed % x ==0 && gameOver == false){
+		if(speed % 2 ==0 && gameOver == false && paused ==false){
+			time ++;
 			snakeParts.add(new Point(head.x, head.y));
 			if(direction == UP  && h.noTailAt(head.x, head.y - 1, snakeParts)) 
 				if(head.y - 1 >= 0 && h.noTailAt(head.x, head.y - 1, snakeParts))
@@ -162,7 +174,7 @@ public class Snake implements KeyListener,ActionListener{
 			else
 				gameOver = true;
 			if(direction == DOWN && h.noTailAt(head.x, head.y + 1, snakeParts))
-				 if (head.y + 1 < 67 && h.noTailAt(head.x, head.y + 1, snakeParts))
+				 if (head.y + 1 < 95 && h.noTailAt(head.x, head.y + 1, snakeParts))
 					 head = new Point(head.x, head.y + 1);
 			else
 				gameOver = true;
@@ -172,7 +184,7 @@ public class Snake implements KeyListener,ActionListener{
 			else
 				gameOver= true;
 			if(direction == RIGHT && h.noTailAt(head.x + 1, head.y, snakeParts))
-				if (head.x + 1 < 80 && h.noTailAt(head.x + 1, head.y, snakeParts))
+				if (head.x + 1 < 119 && h.noTailAt(head.x + 1, head.y, snakeParts))
 					head = new Point(head.x + 1, head.y);
 			else
 				gameOver = true;
@@ -189,18 +201,13 @@ public class Snake implements KeyListener,ActionListener{
                     cherry.setLocation(rand.nextInt(47), rand.nextInt(25));
                     
                     tailLength += 2;
-                    
-                    if(x-1 > 0){
-                    	
-                    	howFast++;
-                    	
-                    	x -=1;
+                 	score++;
+                  
                     }
                 }
 			}
 			
 		}
-	}
 	// returns false if tail is at point you try to turn to
 	// returns true if it is safe
 	

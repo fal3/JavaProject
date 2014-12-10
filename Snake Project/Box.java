@@ -1,5 +1,6 @@
 package snake;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 
@@ -19,7 +20,7 @@ public class Box extends JPanel {
 		super.paintComponent(g);
 		// color of background
 		g.setColor(Color.black);
-		g.fillRect(0,0, 480, 400);
+		g.fillRect(0,0, 720, 600);
 		Snake figure = Snake.getInstance();
 		// color of snake
 		g.setColor(Color.yellow);
@@ -30,7 +31,17 @@ public class Box extends JPanel {
 		g.fillRect(figure.head.x * Snake.SCALE, figure.head.y*Snake.SCALE, figure.SCALE, figure.SCALE);
 		g.setColor(Color.pink);
 		g.fillRect(figure.cherry.x * Snake.SCALE, figure.cherry.y*Snake.SCALE, figure.SCALE, figure.SCALE);
-				
+		
+		String string = "Score: " + figure.score + ", Length: "
+                + figure.tailLength + ", time: " +figure.time / 20 ;
+		 g.setColor(Color.white);
+         g.drawString(string, (int) (getWidth() / 2.3 - string.length() * 2.5f),
+                         10);
+         string = "Game Over!";
+         if (figure.gameOver)
+             g.drawString(string, (int) (getWidth() / 2.3 - string.length() * 2.5f),
+            		 (int) getHeight() / 3);
+         
 		}
 	
 		
