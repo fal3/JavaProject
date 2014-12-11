@@ -172,14 +172,33 @@ public class Snake implements KeyListener,ActionListener{
 		renderPanel.repaint();
 		speed++;
 		
-		if(speed % 2 ==0 && gameOver == false && paused ==false){
-			//timer (seconds) for how long the snake is moving for
-			time++;
-		}
+//		Automatic snake
+//		if(speed % 2 ==0 && gameOver == false && paused ==false){
+//			//timer (seconds) for how long the snake is moving for
+//			if(head.x<cherry.x){
+//				direction = RIGHT;
+//			}
+//			else if(head.x>cherry.x){
+//				direction = LEFT;
+//			}
+//			else if(head.y>cherry.y){
+//				direction = UP;
+//			}
+//			else{
+//				direction = DOWN;
+//			}
+//			
+//			time++;
+//		}
+		
 		//Algorithm for the snake moving on grid
 				// speed % (x) sets speed of snake
 		if(speed % refreshRate ==0 && gameOver == false && paused ==false){	
 			snakeParts.add(new Point(head.x, head.y));
+			
+			
+			
+			
 			if(direction == UP  && h.noTailAt(head.x, head.y - 1, snakeParts))
 			{
 				//up
