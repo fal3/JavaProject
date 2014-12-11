@@ -26,44 +26,44 @@ public class Snake implements KeyListener,ActionListener{
 	
 	
 	//array for the actual snake
-	public ArrayList<Point> snakeParts = new ArrayList<Point>();
+	private ArrayList<Point> snakeParts = new ArrayList<Point>();
 	
 	
 	//speed = speed of snake
-	public int speed = 0;
+	private int speed = 0;
 
-	public int time;
+	private int time;
 	
 	//direction snake is traveling at start
-	public int direction = DOWN;
+	private int direction = DOWN;
 	
 	// value for the direction the snake is moving
-	public static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3;
+	private static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3;
 	
 	
 	//size of each snake pieces
-	public static final int SCALE = 6;
+	private static final int SCALE = 6;
 	
 	//head of the snake
-	public Point head;
+	private Point head;
 	
 	// # of cherrys colided with
-	public int score;
+	private int score;
 	
 	// used to refresh the box
-	public Timer timer = new Timer(20,this);
+	private Timer timer = new Timer(20,this);
 		
 	
 	//the objective to run into called the "cherry"
-	public Point cherry;
+	private Point cherry;
 	
 	private boolean paused;
 	
 	// ends game if true
-	public boolean gameOver;
+	private boolean gameOver;
 	
 	//length of snake 
-	public int tailLength;
+	private int tailLength;
 	
 	public static Snake getInstance(){
 		if (snake == null) {
@@ -102,7 +102,7 @@ public class Snake implements KeyListener,ActionListener{
 		startGame();
 	
 	}
-	
+	//all local variables
 	public void startGame(){
 		
 		
@@ -168,26 +168,42 @@ public class Snake implements KeyListener,ActionListener{
 		if(speed % 2 ==0 && gameOver == false && paused ==false){
 			time ++;
 			snakeParts.add(new Point(head.x, head.y));
-			if(direction == UP  && h.noTailAt(head.x, head.y - 1, snakeParts)) 
+			if(direction == UP  && h.noTailAt(head.x, head.y - 1, snakeParts))
+			{
+				//up
 				if(head.y - 1 >= 0 && h.noTailAt(head.x, head.y - 1, snakeParts))
 					head = new Point(head.x, head.y - 1);
-			else
-				gameOver = true;
-			if(direction == DOWN && h.noTailAt(head.x, head.y + 1, snakeParts))
-				 if (head.y + 1 < 95 && h.noTailAt(head.x, head.y + 1, snakeParts))
+				else 
+					gameOver = true;
+			}
+			else if(direction == DOWN)
+			{
+				//down
+				 if ((head.y + 1 < 96) && h.noTailAt(head.x, head.y + 1, snakeParts))
 					 head = new Point(head.x, head.y + 1);
-			else
-				gameOver = true;
-			if(direction == LEFT && h.noTailAt(head.x - 1, head.y, snakeParts))
+				 else 
+					gameOver = true;
+			}
+			else if(direction == LEFT && h.noTailAt(head.x - 1, head.y, snakeParts))
+			{
+				//left
 				if (head.x - 1 >= 0 && h.noTailAt(head.x - 1, head.y, snakeParts))
 					head = new Point(head.x - 1, head.y);
-			else
-				gameOver= true;
-			if(direction == RIGHT && h.noTailAt(head.x + 1, head.y, snakeParts))
+				else 
+					gameOver = true;
+			}
+			else if(direction == RIGHT && h.noTailAt(head.x + 1, head.y, snakeParts))
+			{
+				//right
 				if (head.x + 1 < 119 && h.noTailAt(head.x + 1, head.y, snakeParts))
 					head = new Point(head.x + 1, head.y);
+				else 
+					gameOver = true;
+			}
 			else
+			{
 				gameOver = true;
+			}
 			
 			if (snakeParts.size() > tailLength)
                 snakeParts.remove(0);
@@ -203,11 +219,11 @@ public class Snake implements KeyListener,ActionListener{
                     tailLength += 2;
                  	score++;
                   
-                    }
                 }
-			}
-			
+            }
 		}
+			
+	}
 	// returns false if tail is at point you try to turn to
 	// returns true if it is safe
 	
@@ -221,6 +237,32 @@ public class Snake implements KeyListener,ActionListener{
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public int getTime(){
+		return time;
+	}
+	public ArrayList<Point> getSnakeParts()
+	{
+		return snakeParts;
+	}
+	public static int getScale(){
+		return SCALE;
+	}
+	public Point getHead(){
+		return head;
+	}
+	public Point getCherry(){
+		return cherry;
+	}
+	public int getTailLength(){
+		return tailLength;
+	}
+	public int getScore(){
+		return score;
+	}
+	public boolean getGameOver(){
+		return gameOver;
 	}
 }
 	

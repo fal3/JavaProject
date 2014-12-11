@@ -11,10 +11,12 @@ public class Helper {
 	public boolean noTailAt(int x, int y, ArrayList<Point> snakeParts)
 	{
         for (Point point : snakeParts) {
-                if (point.equals(new Point(x, y))) {
-                        return false;
+        	
+        	if (point.equals(new Point(x, y))) {
+                    return false;
                 }
         }
         return true;
 	}
+	
 }
