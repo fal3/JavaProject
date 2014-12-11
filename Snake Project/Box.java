@@ -51,7 +51,7 @@ public class Box extends JPanel {
 //         g.drawString(test, (int) (getWidth() / 4.6 - string.length() * 5f),
 //                          20);
 //         
-         string = "Game Over!";
+         string = "Game Over! Press space to restart!";
          if (figure.getGameOver())
              g.drawString(string, (int) (getWidth() / 2.3 - string.length() * 2.5f),
             		 (int) getHeight() / 3);

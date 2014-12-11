@@ -135,7 +135,7 @@ public class Snake implements KeyListener,ActionListener{
 		
 		snakeParts.clear();
 		
-		cherry = new Point(rand.nextInt(119),rand.nextInt(96));
+		cherry = new Point(rand.nextInt(110),rand.nextInt(90));
 		
 		// starts the snake
 		timer.start();
