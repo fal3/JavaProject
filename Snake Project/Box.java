@@ -29,11 +29,11 @@ public class Box extends JPanel {
 			g.fillRect(location.x * Snake.getScale(), location.y*Snake.getScale(), figure.getScale(), figure.getScale());
 		}
 		g.fillRect(figure.getHead().x * Snake.getScale(), figure.getHead().y*Snake.getScale(), figure.getScale(), figure.getScale());
-		g.setColor(Color.pink);
+		g.setColor(Color.red);
 		g.fillRect(figure.getCherry().x * Snake.getScale(), figure.getCherry().y*Snake.getScale(), figure.getScale(), figure.getScale());
 		//Printed stuff on the top
 		String string = "Score: " + figure.getScore() + ", Length: "
-                + figure.getTailLength() + ", time: " +figure.getTime() / 20 ;
+                + figure.getTailLength() + ", time: " +figure.getTime() / 33 + " Current speed level (1 - 7): " +figure.getLevel() ;
 		
 		 g.setColor(Color.white);
          g.drawString(string, (int) (getWidth() / 2.3 - string.length() * 2.5f),
@@ -41,9 +41,10 @@ public class Box extends JPanel {
          
          
 //         Prints x and y position of our snake and its parts for testing purposes
-//         
+         
 //         String test = "x: " + figure.getHead().x + ", Y: "
-//                 + figure.getHead().y + ", gameover: " +figure.gameOver  + figure.snakeParts;
+//                 + figure.getHead().y + ", gameover: " +figure.getGameOver() + "cherry x: " + figure.getCherry().x + ",cherry Y: "
+//                         + figure.getCherry().y  + figure.getSnakeParts();
 // 		
 // 		
 // 		 g.setColor(Color.white);

@@ -51,16 +51,20 @@ public class Snake implements KeyListener,ActionListener{
 	private int score;
 	
 	// used to refresh the box
-	private Timer timer = new Timer(20,this);
+	private Timer timer = new Timer(15,this);
 		
 	
 	//the objective to run into called the "cherry"
 	private Point cherry;
 	
+	private int level;
+	
 	private boolean paused;
 	
 	// ends game if true
 	private boolean gameOver;
+	
+	private int refreshRate;
 	
 	//length of snake 
 	private int tailLength;
@@ -119,6 +123,10 @@ public class Snake implements KeyListener,ActionListener{
 		
 		time = 0;
 		
+		level = 1;
+		
+		refreshRate=9;
+		
 		paused = false;
 		
 		gameOver = false;
@@ -127,7 +135,7 @@ public class Snake implements KeyListener,ActionListener{
 		
 		snakeParts.clear();
 		
-		cherry = new Point(rand.nextInt(69),rand.nextInt(69));
+		cherry = new Point(rand.nextInt(119),rand.nextInt(96));
 		
 		// starts the snake
 		timer.start();
@@ -163,10 +171,14 @@ public class Snake implements KeyListener,ActionListener{
 		//refreshes box
 		renderPanel.repaint();
 		speed++;
-		//Algorithm for the snake moving on grid
-		// speed % (x) sets speed of snake
+		
 		if(speed % 2 ==0 && gameOver == false && paused ==false){
-			time ++;
+			//timer (seconds) for how long the snake is moving for
+			time++;
+		}
+		//Algorithm for the snake moving on grid
+				// speed % (x) sets speed of snake
+		if(speed % refreshRate ==0 && gameOver == false && paused ==false){	
 			snakeParts.add(new Point(head.x, head.y));
 			if(direction == UP  && h.noTailAt(head.x, head.y - 1, snakeParts))
 			{
@@ -208,13 +220,46 @@ public class Snake implements KeyListener,ActionListener{
 			if (snakeParts.size() > tailLength)
                 snakeParts.remove(0);
 			
+			// if cherry is displayed
 			if (cherry != null) {
+				// if the snake head equals the cherry location
 				
                 if (head.equals(cherry)) {
+                		//iterates speed
+                	if(score == 1){
+                		refreshRate-=2;
+                		level++;
+                		
+                	}
+                	//iterates speed
+                	else if(score == 4){
+                		refreshRate-=1;
+                		level++;
+                	}
+                	//iterates speed
+                	else if(score == 6){
+                		refreshRate-=1;
+                		level++;
+                	}
+                	//iterates speed
+                	else if(score == 8){
+                		refreshRate-=1;
+                		level++;
+                	}
+                	//iterates speed
+                	else if(score == 11){
+                		refreshRate-=1;
+                		level++;
+                	}
+                	//iterates speed
+                	else if (score == 15){
+                		refreshRate-=1;
+                		level++;
+                	}
                 	
                 	Random rand = new Random();
                 	//sets cherry location
-                    cherry.setLocation(rand.nextInt(47), rand.nextInt(25));
+                    cherry.setLocation(rand.nextInt(119), rand.nextInt(96));
                     
                     tailLength += 2;
                  	score++;
@@ -260,6 +305,9 @@ public class Snake implements KeyListener,ActionListener{
 	}
 	public int getScore(){
 		return score;
+	}
+	public int getLevel(){
+		return level;
 	}
 	public boolean getGameOver(){
 		return gameOver;
